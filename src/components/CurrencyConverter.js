@@ -1,4 +1,3 @@
-// src/components/CurrencyConverter.js
 import React, { useState, useEffect } from "react";
 import { getExchangeRates } from "../services/ConverterService";
 

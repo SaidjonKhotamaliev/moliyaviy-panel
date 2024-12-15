@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { categories, incomeTypes } from "../utils/enums";
-
-// Enum-like object for categories
 
 const TransactionForm = ({ setTransactions }) => {
   const [form, setForm] = useState({
-    type: "income",
+    type: "",
     amount: 0,
     category: "",
     date: "",
     note: "",
-    incomeType: "",
     time: "",
   });
+
+  useEffect(() => {
+    const storedTransactions = JSON.parse(localStorage.getItem("transactions"));
+    if (storedTransactions) {
+      setTransactions(storedTransactions);
+    }
+  }, [setTransactions]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,15 +26,20 @@ const TransactionForm = ({ setTransactions }) => {
     });
   };
 
-  // Handle submit of form
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle the form submission logic, for example, update transactions
-    setTransactions((prevTransactions) => [...prevTransactions, form]);
-    // Reset the form after submitting
+
+    setTransactions((prevTransactions) => {
+      const updatedTransactions = [...prevTransactions, form];
+
+      localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
+
+      return updatedTransactions;
+    });
+
     setForm({
-      type: "income",
-      amount: 0,
+      type: "",
+      amount: Number(form.amount),
       category: "",
       date: "",
       note: "",
@@ -42,7 +51,8 @@ const TransactionForm = ({ setTransactions }) => {
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="type">Type:</label>
-        <select name="type" value={form.type} onChange={handleChange}>
+        <select required name="type" value={form.type} onChange={handleChange}>
+          <option value="">Select Type</option>
           <option value="income">Income</option>
           <option value="expense">Expense</option>
         </select>
@@ -68,7 +78,7 @@ const TransactionForm = ({ setTransactions }) => {
             value={form.category}
             onChange={handleChange}
           >
-            <option value="">Select Category</option>
+            <option value="">Select Income Type</option>
             {Object.entries(incomeTypes).map(([key, value]) => (
               <option key={key} value={value}>
                 {value}
@@ -76,22 +86,19 @@ const TransactionForm = ({ setTransactions }) => {
             ))}
           </select>
         ) : (
-          <>
-            {" "}
-            <select
-              required
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-            >
-              <option value="">Select Category</option>
-              {Object.entries(categories).map(([key, value]) => (
-                <option key={key} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </>
+          <select
+            required
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+          >
+            <option value="">Select Expense Category</option>
+            {Object.entries(categories).map(([key, value]) => (
+              <option key={key} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
         )}
       </div>
 
