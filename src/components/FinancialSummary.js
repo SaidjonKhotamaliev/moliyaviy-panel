@@ -48,19 +48,44 @@ const FinancialSummary = () => {
   const balance = totalIncome - totalExpenses;
 
   return (
-    <div>
-      <h3>Financial Summary</h3>
-      {loading ? (
-        <p>Loading exchange rates...</p>
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-        <>
-          <p>Total Income: ${totalIncome.toFixed(2)} USD</p>
-          <p>Total Expenses: ${totalExpenses.toFixed(2)} USD</p>
-          <p>Balance: ${balance.toFixed(2)} USD</p>
-        </>
-      )}
+    <div className="container mt-5 mb-5">
+      <div className="card shadow">
+        <div className="card-header text-center">
+          <h3 className="mb-0">Financial Summary</h3>
+        </div>
+        <div className="card-body">
+          {loading ? (
+            <p className="text-center text-muted">Loading exchange rates...</p>
+          ) : error ? (
+            <p className="text-danger text-center">{error}</p>
+          ) : (
+            <>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <strong>Total Income:</strong>
+                <span className="text-success">
+                  ${totalIncome.toFixed(2)} USD
+                </span>
+              </div>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <strong>Total Expenses:</strong>
+                <span className="text-danger">
+                  ${totalExpenses.toFixed(2)} USD
+                </span>
+              </div>
+              <div className="d-flex justify-content-between align-items-center">
+                <strong>Balance:</strong>
+                <span
+                  className={`fw-bold ${
+                    balance >= 0 ? "text-success" : "text-danger"
+                  }`}
+                >
+                  ${balance.toFixed(2)} USD
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

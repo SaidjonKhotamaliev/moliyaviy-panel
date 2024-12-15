@@ -67,114 +67,136 @@ const TransactionForm = ({ setTransactions }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="type">Type:</label>
-        <select required name="type" value={form.type} onChange={handleChange}>
+    <form className="container mt-4" onSubmit={handleSubmit}>
+      <h3>Add new Transaction</h3>
+      <div className="mb-3">
+        <label htmlFor="type" className="form-label">
+          Type:
+        </label>
+        <select
+          required
+          name="type"
+          value={form.type}
+          onChange={handleChange}
+          className="form-select"
+        >
           <option value="">Select Type</option>
           <option value="income">Income</option>
           <option value="expense">Expense</option>
         </select>
       </div>
 
-      <div>
-        <label htmlFor="currency">Currency:</label>
+      <div className="mb-3">
+        <label htmlFor="currency" className="form-label">
+          Currency:
+        </label>
         {loading ? (
-          <p>Loading currencies...</p>
+          <p className="text-muted">Loading currencies...</p>
         ) : error ? (
-          <p>{error}</p>
+          <p className="text-danger">{error}</p>
         ) : (
           <select
             required
             name="currency"
             value={form.currency}
             onChange={handleChange}
+            className="form-select"
           >
             <option value="">Select Currency</option>
-            {currencies.length > 0 ? (
-              currencies.map((currency) => (
-                <option key={currency} value={currency}>
-                  {currency}
-                </option>
-              ))
-            ) : (
-              <option value="">No currencies available</option>
-            )}
+            {currencies.map((currency) => (
+              <option key={currency} value={currency}>
+                {currency}
+              </option>
+            ))}
           </select>
         )}
       </div>
 
-      <div>
-        <label htmlFor="amount">Amount:</label>
+      <div className="mb-3">
+        <label htmlFor="amount" className="form-label">
+          Amount:
+        </label>
         <input
           required
           type="number"
           name="amount"
           value={form.amount}
           onChange={handleChange}
+          className="form-control"
         />
       </div>
 
-      <div>
-        <label htmlFor="category">Category:</label>
-        {form.type === "income" ? (
-          <select
-            required
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-          >
-            <option value="">Select Income Type</option>
-            {Object.entries(incomeTypes).map(([key, value]) => (
-              <option key={key} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <select
-            required
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-          >
-            <option value="">Select Expense Category</option>
-            {Object.entries(categories).map(([key, value]) => (
-              <option key={key} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        )}
+      <div className="mb-3">
+        <label htmlFor="category" className="form-label">
+          Category:
+        </label>
+        <select
+          required
+          name="category"
+          value={form.category}
+          onChange={handleChange}
+          className="form-select"
+        >
+          <option value="">
+            Select {form.type === "income" ? "Income Type" : "Expense Category"}
+          </option>
+          {form.type === "income"
+            ? Object.entries(incomeTypes).map(([key, value]) => (
+                <option key={key} value={value}>
+                  {value}
+                </option>
+              ))
+            : Object.entries(categories).map(([key, value]) => (
+                <option key={key} value={value}>
+                  {value}
+                </option>
+              ))}
+        </select>
       </div>
 
-      <div>
-        <label htmlFor="date">Date:</label>
+      <div className="mb-3">
+        <label htmlFor="date" className="form-label">
+          Date:
+        </label>
         <input
           required
           type="date"
           name="date"
           value={form.date}
           onChange={handleChange}
+          className="form-control"
         />
       </div>
 
-      <div>
-        <label htmlFor="time">Time:</label>
+      <div className="mb-3">
+        <label htmlFor="time" className="form-label">
+          Time:
+        </label>
         <input
           type="time"
           name="time"
           value={form.time}
           onChange={handleChange}
+          className="form-control"
         />
       </div>
 
-      <div>
-        <label htmlFor="note">Note:</label>
-        <textarea name="note" value={form.note} onChange={handleChange} />
+      <div className="mb-3">
+        <label htmlFor="note" className="form-label">
+          Note:
+        </label>
+        <textarea
+          name="note"
+          value={form.note}
+          onChange={handleChange}
+          className="form-control"
+          rows="3"
+        />
       </div>
 
-      <button type="submit">Submit</button>
+      <button type="submit" className="btn btn-primary">
+        Submit
+      </button>
     </form>
   );
 };
