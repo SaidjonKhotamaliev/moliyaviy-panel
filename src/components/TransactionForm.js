@@ -87,7 +87,7 @@ const TransactionForm = ({ setTransactions }) => {
       </div>
 
       <div className="mb-3">
-        <label htmlFor="currency" className="form-label">
+        <label required htmlFor="currency" className="form-label">
           Currency:
         </label>
         {loading ? (
