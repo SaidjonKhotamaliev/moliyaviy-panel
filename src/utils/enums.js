@@ -1,0 +1,16 @@
+export const categories = {
+  GROCERY: "GROCERY",
+  TRANSPORT: "TRANSPORT",
+  FOOD: "FOOD",
+  ENTERTAINMENT: "ENTERTAINMENT",
+  UTILITIES: "UTILITIES",
+  OTHER: "OTHER",
+};
+
+export const incomeTypes = {
+  SALARY: "SALARY",
+  BUSINESS: "BUSINESS",
+  INTEREST: "INTEREST",
+  RENTAL: "RENTAL",
+  OTHER: "OTHER",
+};
