@@ -1,6 +1,6 @@
 Loyiha - Moliyaviy Panel
 
-Loyihani ishga tushirish uchun package.json da yozilganidek npm run start yoki "developer" mode da ishlatish uchun npm run dev komandasi amalga oshirilishi lozim
+Loyihani ishga tushirish uchun package.json da yozilganidek npm run start yoki "developer" mode da ishlatish uchun npm run dev komandasi amalga oshirilishi lozim va albatta npm i qilish kerak sababi file ni compress qilish uchun node_modules file ochirib tashlangan. Xuddi shu xolat agarda git clone qilingandaham sababi nodee_modules .gitignore file da mavjud!
 
 Loyihani yozishda node ning 22.4.0 versiyasidan foydalanildi
 
