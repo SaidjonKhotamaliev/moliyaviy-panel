@@ -5,7 +5,8 @@ const TransactionList = ({ transactions }) => {
     <ul>
       {transactions.map((tx, index) => (
         <li key={index}>
-          {tx.type} - {tx.amount} - {tx.category} - {tx.date}
+          {tx.type} - {tx.amount}
+          {tx.currency} - {tx.category} - {tx.date}
         </li>
       ))}
     </ul>

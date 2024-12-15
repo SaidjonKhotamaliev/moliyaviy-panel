@@ -1,17 +1,37 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { categories, incomeTypes } from "../utils/enums";
 
 const TransactionForm = ({ setTransactions }) => {
   const [form, setForm] = useState({
     type: "",
     amount: 0,
+    currency: "",
     category: "",
     date: "",
     note: "",
     time: "",
   });
+  const [currencies, setCurrencies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
+    axios
+      .get("https://api.exchangerate-api.com/v4/latest/USD")
+      .then((response) => {
+        if (response.data && response.data.rates) {
+          const fetchedCurrencies = Object.keys(response.data.rates);
+          setCurrencies(fetchedCurrencies);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching currencies:", error);
+        setError("Failed to fetch currencies");
+        setLoading(false);
+      });
+
     const storedTransactions = JSON.parse(localStorage.getItem("transactions"));
     if (storedTransactions) {
       setTransactions(storedTransactions);
@@ -31,15 +51,14 @@ const TransactionForm = ({ setTransactions }) => {
 
     setTransactions((prevTransactions) => {
       const updatedTransactions = [...prevTransactions, form];
-
       localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
-
       return updatedTransactions;
     });
 
     setForm({
       type: "",
-      amount: Number(form.amount),
+      amount: 0,
+      currency: "",
       category: "",
       date: "",
       note: "",
@@ -56,6 +75,33 @@ const TransactionForm = ({ setTransactions }) => {
           <option value="income">Income</option>
           <option value="expense">Expense</option>
         </select>
+      </div>
+
+      <div>
+        <label htmlFor="currency">Currency:</label>
+        {loading ? (
+          <p>Loading currencies...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : (
+          <select
+            required
+            name="currency"
+            value={form.currency}
+            onChange={handleChange}
+          >
+            <option value="">Select Currency</option>
+            {currencies.length > 0 ? (
+              currencies.map((currency) => (
+                <option key={currency} value={currency}>
+                  {currency}
+                </option>
+              ))
+            ) : (
+              <option value="">No currencies available</option>
+            )}
+          </select>
+        )}
       </div>
 
       <div>

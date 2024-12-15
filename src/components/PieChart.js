@@ -10,6 +10,7 @@ import {
   LinearScale,
 } from "chart.js";
 import { Stack } from "@mui/material";
+import axios from "axios";
 
 ChartJS.register(
   Title,
@@ -22,22 +23,52 @@ ChartJS.register(
 
 const PieChart = ({ categories, incomeTypes }) => {
   const [transactions, setTransactions] = useState([]);
+  const [exchangeRates, setExchangeRates] = useState({ USD: 1 });
 
   useEffect(() => {
+    axios
+      .get("https://api.exchangerate-api.com/v4/latest/USD")
+      .then((response) => {
+        setExchangeRates(response.data.rates);
+      })
+      .catch((error) => {
+        console.error("Error fetching exchange rates:", error);
+      });
+
     const storedTransactions =
       JSON.parse(localStorage.getItem("transactions")) || [];
     setTransactions(storedTransactions);
   }, []);
 
+  const convertToUSD = (amount, currency) => {
+    if (currency === "USD") {
+      return amount;
+    }
+    if (exchangeRates[currency]) {
+      return amount / exchangeRates[currency];
+    }
+    return amount;
+  };
+
   const expenseTransactions = transactions.filter((t) => t.type === "expense");
 
   const categorySumsExpense = expenseTransactions.reduce((acc, transaction) => {
     const category = transaction.category;
+    const amountInUSD = convertToUSD(
+      Number(transaction.amount),
+      transaction.currency
+    );
+
+    const amountInUSDFormatted = amountInUSD.toFixed(2);
+
     if (categories[category]) {
       acc[category] = acc[category]
-        ? acc[category] + transaction.amount
-        : transaction.amount;
+        ? (
+            parseFloat(acc[category]) + parseFloat(amountInUSDFormatted)
+          ).toFixed(2)
+        : amountInUSDFormatted;
     }
+
     return acc;
   }, {});
 
@@ -45,11 +76,17 @@ const PieChart = ({ categories, incomeTypes }) => {
 
   const categorySumsIncome = incomeTransactions.reduce((acc, transaction) => {
     const category = transaction.category;
+    const amountInUSD = convertToUSD(
+      Number(transaction.amount),
+      transaction.currency
+    );
+
     if (incomeTypes[category]) {
       acc[category] = acc[category]
-        ? acc[category] + transaction.amount
-        : transaction.amount;
+        ? (parseFloat(acc[category]) + amountInUSD).toFixed(2)
+        : amountInUSD.toFixed(2);
     }
+
     return acc;
   }, {});
 
@@ -66,8 +103,6 @@ const PieChart = ({ categories, incomeTypes }) => {
     (sum, amount) => sum + Number(amount),
     0
   );
-  console.log("Income Labels:", labelsIncome);
-  console.log("Income Data:", dataIncome);
 
   const chartDataExpense = {
     labels: labelsExpense,
@@ -105,7 +140,7 @@ const PieChart = ({ categories, incomeTypes }) => {
     ],
   };
 
-  const chartOptionsIcome = {
+  const chartOptionsIncome = {
     responsive: true,
     plugins: {
       tooltip: {
@@ -152,7 +187,7 @@ const PieChart = ({ categories, incomeTypes }) => {
     >
       <Stack alignItems={"center"}>
         <h3>Income Summary</h3>
-        <Pie data={chartDataIncome} options={chartOptionsIcome} />
+        <Pie data={chartDataIncome} options={chartOptionsIncome} />
       </Stack>
       <Stack alignItems={"center"}>
         <h3>Expense Summary</h3>

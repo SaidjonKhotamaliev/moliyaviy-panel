@@ -3,7 +3,7 @@ import { getExchangeRates } from "../services/ConverterService";
 
 const CurrencyConverter = () => {
   const [rates, setRates] = useState({});
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState();
   const [converted, setConverted] = useState(0);
   const [currency, setCurrency] = useState("EUR");
 
@@ -24,7 +24,7 @@ const CurrencyConverter = () => {
         onChange={(e) => setAmount(e.target.value)}
         placeholder="Amount in USD"
       />
-      <select onChange={(e) => setCurrency(e.target.value)}>
+      <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
         {Object.keys(rates).map((curr) => (
           <option key={curr} value={curr}>
             {curr}
